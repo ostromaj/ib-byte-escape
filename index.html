@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>IB Byte Escape</title>
 <script>
 // Firebase settings for live class multiplayer (web config keys are public by design; access is controlled by the database rules)
@@ -257,6 +262,7 @@ body.touch .prompt{bottom:calc(200px + env(safe-area-inset-bottom,0px));font-siz
 .endBtns .btn{background:#fff;color:#2a0408}
 .endBtns .btn.ghost{background:transparent;color:#fff;border:1px solid #fff6}
 
+#lb{z-index:60}
 #endWin{background:radial-gradient(1000px 600px at 50% 0%,#14304e,#060b14 70%)}
 .cert{max-width:860px;margin:0 auto;background:var(--paper);color:var(--ink);border-radius:4px;padding:34px clamp(18px,4vw,48px);box-shadow:0 40px 90px rgba(0,0,0,.6);position:relative;font-family:var(--serif)}
 .cert:before{content:"";position:absolute;inset:10px;border:2px solid #1a2742;pointer-events:none}
@@ -272,7 +278,7 @@ body.touch .prompt{bottom:calc(200px + env(safe-area-inset-bottom,0px));font-siz
 .gradeStamp{width:150px;height:150px;border-radius:50%;border:5px double #1a7f3c;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-8deg);color:#1a7f3c;flex:none;background:rgba(26,127,60,.05)}
 .gradeStamp b{font:700 64px/1 var(--display)}
 .gradeStamp span{font:700 10px var(--mono);letter-spacing:.2em;text-transform:uppercase}
-.rtbl{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px;font-family:var(--body)}
+.rtbl{color:var(--ink);width:100%;border-collapse:collapse;margin-top:14px;font-size:14px;font-family:var(--body)}
 .rtbl th{text-align:left;border-bottom:2px solid #1a2742;padding:6px;font:700 11px var(--mono);letter-spacing:.12em;text-transform:uppercase}
 .rtbl td{border-bottom:1px solid #d8d0bc;padding:7px 6px;font-variant-numeric:tabular-nums}
 .rtbl td.n{text-align:right;font-family:var(--mono)}
@@ -3339,3 +3345,5 @@ $('#tClose').onclick = () => $('#teacher').classList.add('hidden');
   requestAnimationFrame(frame);
 })();
 </script>
+
+</html>
