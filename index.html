@@ -1080,17 +1080,19 @@ function buildAvatar(av) {
   const R = .125, HP = fem ? { jaw: .42, nose: .12, noseW: .05, lip: .05 } : male ? { jaw: .26, nose: .16, noseW: .06, lip: .035 } : { jaw: .34, nose: .14, noseW: .055, lip: .042 };
   head.add(buildHead(R, HP, skinM));
   const irisC = ['#5a3a1e', '#3b6ea5', '#4f7a3a', '#2a1a10', '#7a5a2a'][(av.skin * 3 + (av.hc.charCodeAt(3) || 0)) % 5];
-  const irisT = canvasTex(64, 64, (x) => { const r = x.createRadialGradient(32, 32, 4, 32, 32, 32); r.addColorStop(0, '#000'); r.addColorStop(.28, '#000'); r.addColorStop(.32, irisC); r.addColorStop(.85, irisC); r.addColorStop(1, '#111'); x.fillStyle = '#f4f2ee'; x.fillRect(0, 0, 64, 64); x.fillStyle = r; x.beginPath(); x.arc(32, 32, 30, 0, TAU); x.fill(); x.strokeStyle = 'rgba(255,255,255,.25)'; for (let i = 0; i < 24; i++) { const a = i * TAU / 24; x.beginPath(); x.moveTo(32 + Math.cos(a) * 11, 32 + Math.sin(a) * 11); x.lineTo(32 + Math.cos(a) * 26, 32 + Math.sin(a) * 26); x.stroke(); } });
+  const irisT = canvasTex(64, 64, (x) => { const r = x.createRadialGradient(32, 32, 4, 32, 32, 32); r.addColorStop(0, '#000'); r.addColorStop(.25, irisC); r.addColorStop(.8, irisC); r.addColorStop(1, '#0d0a08'); x.fillStyle = irisC; x.fillRect(0, 0, 64, 64); x.fillStyle = r; x.beginPath(); x.arc(32, 32, 30, 0, TAU); x.fill(); x.strokeStyle = 'rgba(255,255,255,.25)'; for (let i = 0; i < 24; i++) { const a = i * TAU / 24; x.beginPath(); x.moveTo(32 + Math.cos(a) * 11, 32 + Math.sin(a) * 11); x.lineTo(32 + Math.cos(a) * 26, 32 + Math.sin(a) * 26); x.stroke(); } });
   const eyes = [];
   for (const s of [-1, 1]) {
     const p = surf(s * .32, .1, HP, R);
-    const eb = new THREE.Group(); eb.position.set(p.x, p.y, p.z - .006); head.add(eb);
-    const ball = new THREE.Mesh(new THREE.SphereGeometry(.0128, 24, 18), new THREE.MeshStandardMaterial({ color: 0xf6f4ef, roughness: .15 })); eb.add(ball);
-    const ir = new THREE.Mesh(new THREE.CircleGeometry(.0068, 24), new THREE.MeshStandardMaterial({ map: irisT, roughness: .1 })); ir.position.z = .0124; eb.add(ir);
-    const cor = new THREE.Mesh(new THREE.SphereGeometry(.0075, 16, 8, 0, TAU, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: .15, roughness: 0, metalness: .2 })); cor.rotation.x = Math.PI / 2; cor.position.z = .0108; eb.add(cor);
+    const eb = new THREE.Group(); eb.position.set(p.x, p.y, p.z - .0035); head.add(eb);
+    const ball = new THREE.Mesh(new THREE.SphereGeometry(.0128, 24, 18), new THREE.MeshStandardMaterial({ color: 0xe9e4dc, roughness: .35, envMapIntensity: .35 })); eb.add(ball);
+    // iris + pupil sit on a shallow dome so they follow the curve of the eyeball
+    const ir = new THREE.Mesh(new THREE.SphereGeometry(.0129, 24, 12, 0, TAU, 0, .66), new THREE.MeshStandardMaterial({ map: irisT, roughness: .55, envMapIntensity: .15 })); ir.rotation.x = Math.PI / 2; eb.add(ir);
+    const pu = new THREE.Mesh(new THREE.SphereGeometry(.01295, 20, 8, 0, TAU, 0, .27), new THREE.MeshBasicMaterial({ color: 0x050505 })); pu.rotation.x = Math.PI / 2; eb.add(pu);
+    const glint = new THREE.Mesh(new THREE.CircleGeometry(.0017, 10), new THREE.MeshBasicMaterial({ color: 0xffffff })); glint.position.set(.0028, .0032, .0126); eb.add(glint);
     eyes.push(eb);
-    const lid = new THREE.Mesh(new THREE.SphereGeometry(.0138, 24, 10, 0, TAU, 0, Math.PI * .45), skinM); lid.position.copy(eb.position); lid.rotation.x = .35; head.add(lid);
-    const low = new THREE.Mesh(new THREE.SphereGeometry(.0136, 24, 6, 0, TAU, Math.PI * .72, Math.PI * .28), skinM); low.position.copy(eb.position); head.add(low);
+    const lid = new THREE.Mesh(new THREE.SphereGeometry(.0138, 24, 10, 0, TAU, 0, Math.PI * .34), skinM); lid.position.copy(eb.position); lid.rotation.x = .1; head.add(lid);
+    const low = new THREE.Mesh(new THREE.SphereGeometry(.0136, 24, 6, 0, TAU, Math.PI * .76, Math.PI * .24), skinM); low.position.copy(eb.position); head.add(low);
     const bp = surf(s * .32, .3, HP, R);
     const brow = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(bp.x - s * .02, bp.y - .004, bp.z - .004), new THREE.Vector3(bp.x, bp.y + .003, bp.z + .003), new THREE.Vector3(bp.x + s * .022, bp.y - .002, bp.z - .008)]), 10, fem ? .0024 : .0038, 6), hairM); head.add(brow);
     if (fem) { const lash = new THREE.Mesh(new THREE.TorusGeometry(.0136, .0012, 4, 16, Math.PI * .9), basic('#141414')); lash.position.copy(eb.position); lash.position.y += .002; lash.rotation.set(-.25, 0, Math.PI * .05); head.add(lash); }
