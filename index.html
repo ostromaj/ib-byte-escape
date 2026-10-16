@@ -2051,7 +2051,7 @@ function buildLevel(i) {
   glass.position.set(-3, 2.3, -10); add(glass);
   const fm = glow(L.color, 1.3);
   box(6.2, .12, .5, fm, -3, 1.0, -10); box(6.2, .12, .5, fm, -3, 3.6, -10); box(.12, 2.7, .5, fm, -6.05, 2.3, -10); box(.12, 2.7, .5, fm, .05, 2.3, -10); box(.08, 2.6, .45, fm, -3, 2.3, -10);
-  const winB = board(2.6, .42, (x, w, h) => { x.fillStyle = '#06101a'; x.fillRect(0, 0, w, h); x.fillStyle = hex; x.font = '700 30px "Chakra Petch", sans-serif'; x.textAlign = 'center'; x.fillText('WINDOW · press E to look out', w / 2, 38); }, 128);
+  const winB = board(4, .46, (x, w, h) => { x.fillStyle = '#06101a'; x.fillRect(0, 0, w, h); x.fillStyle = hex; fitText(x, 'WINDOW · press E to look out', w / 2, h / 2 + 10, w - 24, 30, '700', '"Chakra Petch", sans-serif', 'center'); }, 128);
   winB.position.set(-3, .6, -9.78); add(winB);
   // explore room
   wallZ(-30, -10, -12, 7, wm2); wallZ(-30, -25.5, 12, 7, wm2); wallZ(-22.5, -10, 12, 7, wm2); box(.4, 4, 3, wm2, 12, 5, -24); wallX(-12, 12, -30, 7, wm2);
@@ -2178,17 +2178,21 @@ function dressRoom(L, hex) {
 function drawDoorBoard(x, w, h) {
   const i = S.area, L = LEVELS[i], ds = S.doors[i], hex = '#' + new THREE.Color(L.color).getHexString();
   x.fillStyle = '#05080e'; x.fillRect(0, 0, w, h); x.strokeStyle = hex; x.lineWidth = 6; x.strokeRect(3, 3, w - 6, h - 6);
-  x.fillStyle = hex; x.font = '700 52px "Chakra Petch", sans-serif'; x.fillText('DOOR ' + (i + 1) + (L.hidden && !ds.seen ? ' · ???' : ' · ' + L.title.toUpperCase()), 26, 62);
-  x.fillStyle = '#fff'; x.font = '600 32px "IBM Plex Sans", sans-serif';
-  x.fillText(ds.revealed ? 'Topic: ' + L.topic : 'Topic hidden. Look out the window first.', 26, 112);
-  x.fillStyle = '#f2c14e'; x.font = '700 40px "JetBrains Mono", monospace';
-  x.fillText('NEED ' + L.req + ' MARKS · HAVE ' + ds.earned + ' · CHANCES ' + ds.chances, 26, 164);
+  const mw = w - 52;
+  x.fillStyle = hex; fitText(x, 'DOOR ' + (i + 1) + (L.hidden && !ds.seen ? ' · ???' : ' · ' + L.title.toUpperCase()), 26, 62, mw, 52, '700', '"Chakra Petch", sans-serif');
+  x.fillStyle = '#fff'; fitText(x, ds.revealed ? 'Topic: ' + L.topic : 'Topic hidden. Look out the window first.', 26, 112, mw, 32, '600', '"IBM Plex Sans", sans-serif');
+  x.fillStyle = '#f2c14e'; fitText(x, 'NEED ' + L.req + ' MARKS · HAVE ' + ds.earned + ' · CHANCES ' + ds.chances, 26, 164, mw, 40, '700', '"JetBrains Mono", monospace');
+}
+// draw text shrunk until it fits the board
+function fitText(x, text, px, py, maxW, size, weight, family, align = 'left') {
+  let s = size; do { x.font = weight + ' ' + s + 'px ' + family; s -= 1; } while (x.measureText(text).width > maxW && s > 8);
+  x.textAlign = align; x.fillText(text, px, py);
 }
 function drawExploreBoard(x, w, h) {
   const ds = S.doors[S.area], L = LEVELS[S.area];
   x.fillStyle = ds.exploreOpen ? '#06231a' : '#230609'; x.fillRect(0, 0, w, h);
-  x.fillStyle = ds.exploreOpen ? '#3cff8f' : '#ff6b74'; x.font = '700 30px "Chakra Petch", sans-serif'; x.textAlign = 'center';
-  x.fillText(ds.exploreOpen ? 'EXPLORE: INSIDE ' + (L.hidden && !ds.seen ? 'THIS PART' : L.comp.toUpperCase()) : 'LOCKED · ANSWER A QUESTION FIRST', w / 2, 42);
+  x.fillStyle = ds.exploreOpen ? '#3cff8f' : '#ff6b74';
+  fitText(x, ds.exploreOpen ? 'EXPLORE: INSIDE ' + (L.hidden && !ds.seen ? 'THIS PART' : L.comp.toUpperCase()) : 'LOCKED · ANSWER A QUESTION FIRST', w / 2, h / 2 + 11, w - 24, 30, '700', '"Chakra Petch", sans-serif', 'center');
 }
 
 // =============== THEMED EXPLORE ROOMS ===============
@@ -2590,7 +2594,8 @@ function detailRoom(L, hex) {
   wallScreen(-11.75, 3.6, -26, Math.PI / 2, 2.8, 1.7, hex, 0, T + ' · TRACE');
   wallScreen(-4, 5.2, -29.75, 0, 3, 1.8, hex, 1, T + ' · BUS ACTIVITY');
   // cable trays with sagging cables
-  cableTray([[-11.3, -9], [-11.3, -4], [-11.3, 4], [-11.3, 9]], 4.2, ['#1f5fd6', '#ff7a00', '#e9eef7', '#3cff8f', '#d64545']);
+  cableTray([[-11.3, -9.2], [-11.3, -3.3]], 4.25, ['#1f5fd6', '#ff7a00', '#e9eef7', '#3cff8f', '#d64545']);
+  cableTray([[-11.3, 3.3], [-11.3, 9.2]], 4.25, ['#1f5fd6', '#ff7a00', '#e9eef7', '#3cff8f', '#d64545']);
   cableTray([[11.3, -11], [11.3, -17], [11.3, -21.5]], 6.0, ['#1f5fd6', '#f2c14e', '#e9eef7', '#7a5cff']);
   cableTray([[11.3, -26.5], [11.3, -29.3]], 6.0, ['#1f5fd6', '#f2c14e', '#e9eef7']);
   // capacitor banks in the corners
